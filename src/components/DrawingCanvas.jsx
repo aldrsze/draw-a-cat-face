@@ -67,8 +67,8 @@ const DrawingCanvas = forwardRef(({ selectedColor, brushSize, isEraser }, ref) =
     <div className="canvas-container">
       <canvas 
         ref={canvasRef}
-        width={600}
-        height={600}
+        width={80}  /* Updated from 600 */
+        height={80} /* Updated from 600 */
         onMouseDown={startDrawing}
         onMouseMove={draw}
         onMouseUp={stopDrawing}

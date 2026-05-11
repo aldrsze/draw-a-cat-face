@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import LitterBox from './components/LitterBox';
+import CatCollection from './components/CatCollection';
 import CatShow from './components/CatShow';
 import DrawingCanvas from './components/DrawingCanvas';
 import './App.css';
@@ -50,8 +50,8 @@ function App() {
     ));
   };
 
-  if (view === 'litter') return <LitterBox onBack={() => setView('draw')} />;
-  
+  if (view === 'litter') return <CatCollection cats={galleryCats} onBack={() => setView('draw')} />; 
+
   // ✨ Pass our local database down to the CatShow component
   if (view === 'show') {
     return <CatShow cats={galleryCats} onStar={handleStar} onBack={() => setView('draw')} />;
@@ -102,7 +102,7 @@ function App() {
       />
 
       <footer className="footer-actions">
-        <a className="footer-link" onClick={() => setView('litter')}>litter box</a>
+        <a className="footer-link" onClick={() => setView('litter')}>collection</a>
         <div className="action-stack">
           <input 
             type="text" 
