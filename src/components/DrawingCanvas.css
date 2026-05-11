@@ -1,0 +1,62 @@
+.toolbar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+.color-palette {
+  display: flex; 
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.size-slider-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 180px;
+  justify-content: center;
+}
+
+.canvas-container {
+  border: 1px solid #000; 
+  background: white;
+  height: 50vh; /* Base size on height to prevent horizontal stretching */
+  max-height: 600px; /* Cap it at your internal 600px resolution */
+  aspect-ratio: 1 / 1; /* Force a perfect square */
+  display: flex;
+  cursor: crosshair;
+  margin: 0 auto; /* Keeps the canvas centered on the screen */
+}
+
+canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none; /* Prevents the webpage from scrolling while you draw */
+}
+
+.color-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid #000;
+  cursor: pointer;
+}
+
+.color-circle.active {
+  outline: 2px solid #000; 
+  outline-offset: 2px;
+}
