@@ -101,16 +101,7 @@ function App() {
 
   return (
     <div className="app-container">
-      <div style={{ 
-        fontSize: '10px', 
-        position: 'absolute', 
-        top: '5px', 
-        right: '5px', 
-        opacity: 0.6 
-      }}>
-        {dbStatus}
-      </div>
-      
+
       <header className="drawing-header">
         <h1>Draw a Cat Face!</h1>
         <p>(whiskers included please)</p>
