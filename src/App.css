@@ -1,15 +1,14 @@
 .app-container {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* Better for scrolling on small screens */
+  justify-content: flex-start;
   align-items: center;
   min-height: 100dvh; 
   width: 100%;
   padding: 10px;
-  overflow-y: auto; /* Allow vertical scroll if content overflows */
+  overflow-y: auto;
 }
 
-/* Make header text slightly smaller on mobile */
 @media (max-width: 480px) {
   .drawing-header h1 {
     font-size: 1.5rem;
@@ -26,7 +25,7 @@
   margin-top: 15px;
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap; /* Stack buttons if they don't fit */
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   gap: 20px;
@@ -36,7 +35,7 @@
 @media (max-width: 480px) {
   .footer-actions {
     gap: 15px;
-    flex-direction: column; /* Stack vertically on very small phones */
+    flex-direction: column;
   }
 }
 
@@ -50,8 +49,8 @@
 .cat-name-input {
   font-family: 'Calibri', sans-serif;
   padding: 4px 8px;
-  border: 1px solid #000; /* Flat border */
-  border-radius: 0; /* Removed rounding */
+  border: 1px solid #000;
+  border-radius: 0;
   width: 160px;
   text-align: center;
 }
@@ -65,9 +64,9 @@
 
 button {
   cursor: pointer;
-  background: #fff; /* White background */
-  border: 1px solid #000; /* Flat border */
-  border-radius: 0; /* Removed rounding */
+  background: #fff;
+  border: 1px solid #000;
+  border-radius: 0;
   padding: 4px 12px;
   font-family: inherit;
 }

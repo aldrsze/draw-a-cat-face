@@ -1,7 +1,7 @@
 .gallery-container {
   width: 95vw;
   max-width: 1200px;
-  flex-grow: 1; /* Maximizes the available vertical space */
+  flex-grow: 1;
   max-height: 80vh; 
   overflow-y: auto;
   padding: 15px;
@@ -9,7 +9,6 @@
   border: 1px solid #000;
 }
 
-/* Simple Grid */
 .gallery-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); 
@@ -19,7 +18,7 @@
 
 @media (max-width: 400px) {
   .gallery-grid {
-    grid-template-columns: 1fr 1fr; /* Force 2 columns on small mobile */
+    grid-template-columns: 1fr 1fr;
   }
 }
 
@@ -32,10 +31,9 @@
   padding: 10px;
 }
 
-/* Simple Face Box */
 .face-placeholder {
   width: 100%;
-  aspect-ratio: 1 / 1; /* Keeps it square automatically */
+  aspect-ratio: 1 / 1;
   border: 1px solid #000;
   display: flex;
   justify-content: center;

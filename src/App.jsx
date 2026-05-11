@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { supabase } from './supabaseClient'; // New Import
+import { supabase } from './supabaseClient';
 import CatCollection from './components/CatCollection';
 import CatShow from './components/CatShow';
 import DrawingCanvas from './components/DrawingCanvas';
@@ -14,7 +14,6 @@ function App() {
   const canvasRef = useRef(); 
   const [galleryCats, setGalleryCats] = useState([]);
 
-  // ✨ Fetch all cats from Supabase on component mount
   useEffect(() => {
     fetchCats();
   }, []);
@@ -23,7 +22,7 @@ function App() {
   try {
     const { data, error } = await supabase
       .from('cats')
-      .select('id') // Just grab IDs to check connection
+      .select('id')
       .limit(1);
     
     if (error) {
@@ -32,7 +31,6 @@ function App() {
     } else {
       setDbStatus('Connected to Supabase ✅');
       
-      // Now fetch the actual data
       const { data: fullData } = await supabase
         .from('cats')
         .select('*')
@@ -49,9 +47,8 @@ function App() {
   const handleMakeItMeow = async () => {
     if (!catName) return alert("Please name your cat!");
     
-    const imageData = canvasRef.current.getDrawingData(); //
+    const imageData = canvasRef.current.getDrawingData();
     
-    // ✨ Insert into Supabase instead of local storage
     const { data, error } = await supabase
       .from('cats')
       .insert([{ 
@@ -77,7 +74,6 @@ function App() {
 
     const newStarCount = catToUpdate.stars + 1;
 
-    // ✨ Update the star count in the database
     const { error } = await supabase
       .from('cats')
       .update({ stars: newStarCount })
@@ -86,7 +82,6 @@ function App() {
     if (error) {
       console.error('Error starring cat:', error);
     } else {
-      // Update local state to reflect change immediately
       setGalleryCats(galleryCats.map(cat => 
         cat.id === id ? { ...cat, stars: newStarCount } : cat
       ));

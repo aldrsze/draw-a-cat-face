@@ -26,7 +26,7 @@
 
 @media (max-width: 400px) {
   .litter-grid {
-    grid-template-columns: 1fr 1fr; /* Force 2 columns on small mobile */
+    grid-template-columns: 1fr 1fr;
   }
 }
 
@@ -39,7 +39,6 @@
   border-radius: 8px;
 }
 
-/* Litter pan at the bottom */
 .cat-frame::after {
   content: '';
   position: absolute;
@@ -52,7 +51,6 @@
   z-index: 4;
 }
 
-/* Scene wrapper — positions everything relative to the pan */
 .cat-scene {
   position: absolute;
   bottom: 30px;
@@ -63,7 +61,6 @@
   z-index: 5;
 }
 
-/* Round sitting body */
 .cat-body {
   position: absolute;
   bottom: 0;
@@ -76,7 +73,6 @@
   z-index: 2;
 }
 
-/* Round head, overlapping the body */
 .cat-head {
   position: absolute;
   bottom: 52px;
@@ -92,7 +88,6 @@
   justify-content: center;
 }
 
-/* Triangular ears using CSS borders */
 .ear-left,
 .ear-right {
   position: absolute;
@@ -108,7 +103,6 @@
 .ear-left  { left: 4px;  transform: rotate(-22deg); }
 .ear-right { right: 4px; transform: rotate(22deg);  }
 
-/* Pink inner ear */
 .ear-inner-left,
 .ear-inner-right {
   position: absolute;
@@ -124,7 +118,6 @@
 .ear-inner-left  { left: 11px;  transform: rotate(-22deg); }
 .ear-inner-right { right: 11px; transform: rotate(22deg);  }
 
-/* Circular face — the drawn image goes here */
 .cat-face-overlay {
   width: 68px;
   height: 68px;
@@ -136,7 +129,6 @@
   position: relative;
 }
 
-/* Little paws at the bottom of the body */
 .paw-left,
 .paw-right {
   position: absolute;
@@ -151,7 +143,6 @@
 .paw-left  { left: -2px; }
 .paw-right { right: -2px; }
 
-/* Tail — lives directly in .cat-frame so it has room to swing without clipping */
 .tail {
   position: absolute;
   bottom: 42px;
