@@ -34,15 +34,17 @@
   border: 2px solid #000; 
   background: white;
   
-  /* Increased from 80px to 320px so it's easy to draw */
-  width: 320px;
-  height: 320px; 
+  /* Use viewport units for responsiveness */
+  width: 80vw; 
+  height: 80vw;
+  max-width: 320px; /* Keep the original size on desktop */
+  max-height: 320px;
   
   border-radius: 50%;
   overflow: hidden; 
   display: flex;
-  cursor: crosshair;
-  margin: 0 auto; 
+  touch-action: none; /* Essential: prevents scrolling while drawing */
+  margin: 10px auto; 
 }
 
 canvas {

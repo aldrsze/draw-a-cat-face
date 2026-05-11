@@ -32,14 +32,20 @@ const DrawingCanvas = forwardRef(({ selectedColor, brushSize, isEraser }, ref) =
     ctx.lineWidth = brushSize; 
   }, [selectedColor, brushSize, isEraser]);
 
+  // Helper to get coordinates for both Mouse and Touch
   const getCoordinates = (e) => {
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;    
-    const scaleY = canvas.height / rect.height;  
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    // Check if it's a touch event or mouse event
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
     return {
-      x: e.nativeEvent.offsetX * scaleX,
-      y: e.nativeEvent.offsetY * scaleY
+      x: (clientX - rect.left) * scaleX,
+      y: (clientY - rect.top) * scaleY
     };
   };
 
@@ -67,12 +73,16 @@ const DrawingCanvas = forwardRef(({ selectedColor, brushSize, isEraser }, ref) =
     <div className="canvas-container">
       <canvas 
         ref={canvasRef}
-        width={80}  /* Updated from 600 */
-        height={80} /* Updated from 600 */
+        width={160} /* Increased resolution for better mobile clarity */
+        height={160} 
         onMouseDown={startDrawing}
         onMouseMove={draw}
         onMouseUp={stopDrawing}
         onMouseOut={stopDrawing}
+        /* Mobile Touch Events */
+        onTouchStart={startDrawing}
+        onTouchMove={draw}
+        onTouchEnd={stopDrawing}
       />
     </div>
   );
