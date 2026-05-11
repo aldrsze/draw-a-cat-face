@@ -1,64 +1,116 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { supabase } from './supabaseClient'; // New Import
 import CatCollection from './components/CatCollection';
 import CatShow from './components/CatShow';
 import DrawingCanvas from './components/DrawingCanvas';
 import './App.css';
 
 function App() {
+  const [dbStatus, setDbStatus] = useState('Checking connection...');
   const [view, setView] = useState('draw'); 
   const [catName, setCatName] = useState('');
   const [brushSize, setBrushSize] = useState(5); 
   const [isEraser, setIsEraser] = useState(false); 
   const canvasRef = useRef(); 
+  const [galleryCats, setGalleryCats] = useState([]);
 
-  // ✨ STATIC DB: Load saved cats from local storage (or start empty)
-  const [galleryCats, setGalleryCats] = useState(() => {
-    const savedCats = localStorage.getItem('catGallery');
-    return savedCats ? JSON.parse(savedCats) : [];
-  });
-
-  // ✨ STATIC DB: Save to local storage automatically whenever the gallery updates
+  // ✨ Fetch all cats from Supabase on component mount
   useEffect(() => {
-    localStorage.setItem('catGallery', JSON.stringify(galleryCats));
-  }, [galleryCats]);
+    fetchCats();
+  }, []);
 
-  const handleMakeItMeow = () => {
+  async function fetchCats() {
+  try {
+    const { data, error } = await supabase
+      .from('cats')
+      .select('id') // Just grab IDs to check connection
+      .limit(1);
+    
+    if (error) {
+      setDbStatus(`Connection Error: ${error.message}`);
+      console.error('Supabase error:', error);
+    } else {
+      setDbStatus('Connected to Supabase ✅');
+      
+      // Now fetch the actual data
+      const { data: fullData } = await supabase
+        .from('cats')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (fullData) setGalleryCats(fullData);
+    }
+  } catch (err) {
+    setDbStatus('Failed to reach database server.');
+    console.error('Network error:', err);
+  }
+}
+
+  const handleMakeItMeow = async () => {
     if (!catName) return alert("Please name your cat!");
     
-    const imageData = canvasRef.current.getDrawingData();
+    const imageData = canvasRef.current.getDrawingData(); //
     
-    // Create a new "database row" locally
-    const newCat = {
-      id: Date.now(), // Generate a unique ID using the current time
-      name: catName,
-      image_data: imageData,
-      stars: 0
-    };
+    // ✨ Insert into Supabase instead of local storage
+    const { data, error } = await supabase
+      .from('cats')
+      .insert([{ 
+        name: catName, 
+        image_data: imageData, 
+        stars: 0 
+      }])
+      .select();
 
-    // Add the new cat to the top of our gallery list
-    setGalleryCats([newCat, ...galleryCats]);
-    
-    // Reset and switch view
-    setCatName('');
-    setView('show');
+    if (error) {
+      alert("Error saving your cat to the cloud!");
+      console.error(error);
+    } else {
+      setGalleryCats([data[0], ...galleryCats]);
+      setCatName('');
+      setView('show');
+    }
   };
 
-  // Handle starring a cat locally
-  const handleStar = (id) => {
-    setGalleryCats(galleryCats.map(cat => 
-      cat.id === id ? { ...cat, stars: cat.stars + 1 } : cat
-    ));
+  const handleStar = async (id) => {
+    const catToUpdate = galleryCats.find(c => c.id === id);
+    if (!catToUpdate) return;
+
+    const newStarCount = catToUpdate.stars + 1;
+
+    // ✨ Update the star count in the database
+    const { error } = await supabase
+      .from('cats')
+      .update({ stars: newStarCount })
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error starring cat:', error);
+    } else {
+      // Update local state to reflect change immediately
+      setGalleryCats(galleryCats.map(cat => 
+        cat.id === id ? { ...cat, stars: newStarCount } : cat
+      ));
+    }
   };
 
   if (view === 'litter') return <CatCollection cats={galleryCats} onBack={() => setView('draw')} />; 
 
-  // ✨ Pass our local database down to the CatShow component
   if (view === 'show') {
     return <CatShow cats={galleryCats} onStar={handleStar} onBack={() => setView('draw')} />;
   }
 
   return (
     <div className="app-container">
+      <div style={{ 
+        fontSize: '10px', 
+        position: 'absolute', 
+        top: '5px', 
+        right: '5px', 
+        opacity: 0.6 
+      }}>
+        {dbStatus}
+      </div>
+      
       <header className="drawing-header">
         <h1>Draw a Cat Face!</h1>
         <p>(whiskers included please)</p>
