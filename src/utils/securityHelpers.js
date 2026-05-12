@@ -50,7 +50,7 @@ export const rateLimiters = {
 export const validateInput = {
   // Validate cat name
   catName: (name) => {
-    if (!name || typeof name !== 'string') return { valid: false, error: 'Name must be a string' };
+    if (!name || typeof name !== 'string') return { valid: false, error: 'pusang nameless?' };
     if (name.trim().length === 0) return { valid: false, error: 'Name cannot be empty' };
     if (name.length > 100) return { valid: false, error: 'Name too long (max 100 chars)' };
     // Prevent common XSS attempts (no HTML tags, scripts, dangerous chars)

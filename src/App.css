@@ -21,6 +21,15 @@
   margin-bottom: 10px;
 }
 
+/* layout wrapper for toolbar + canvas */
+.main-workspace {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 12px;
+}
+
 .footer-actions {
   margin-top: 15px;
   display: flex;
@@ -51,7 +60,7 @@
   padding: 4px 8px;
   border: 1px solid #000;
   border-radius: 0;
-  width: 160px;
+  width: min(240px, 40vw);
   text-align: center;
 }
 

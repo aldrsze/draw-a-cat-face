@@ -124,7 +124,7 @@ export const saveCat = async (catName, imageDataUrl) => {
   // ===== SECURITY: Check if drawing is blank (user didn't actually draw) =====
   const isBlank = await isBlankDrawing(imageDataUrl);
   if (isBlank) {
-    return { success: false, error: 'Please draw something! Your canvas is empty.' };
+    return { success: false, error: 'Posang walang mukha?' };
   }
 
   // ===== SECURITY: Spam Detection =====

@@ -13,6 +13,7 @@ function App() {
   const [isEraser, setIsEraser] = useState(false); 
   const [isSaving, setIsSaving] = useState(false);
   const canvasRef = useRef();
+  const [selectedColor, setSelectedColor] = useState('black');
 
   const handleMakeItMeow = async () => {
     if (isSaving) return; // Prevent double-submit
@@ -69,11 +70,12 @@ function App() {
     <div className="app-container">
       <header className="drawing-header">
         <h1>Draw a Cat Face!</h1>
-        <p>(whiskers included please)</p>
+        <p>(bawal bastos)</p>
         {/* <p style={{ fontSize: '12px', color: '#666' }}>{dbStatus}</p> */}
       </header>
 
-      <div className="toolbar">
+      <div className="main-workspace">
+        <div className="toolbar">
         <div className="controls">
           <div style={{ display: 'flex', gap: '5px' }}>
             <button 
@@ -110,6 +112,25 @@ function App() {
             </button>
           </div>
 
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginTop: 8 }}>
+            {['black','#FF5252','#FFB300','#4CAF50','#2196F3','#9C27B0'].map((c) => (
+              <button
+                key={c}
+                onClick={() => { setSelectedColor(c); setIsEraser(false); }}
+                title={`Color ${c}`}
+                style={{
+                  width: 26,
+                  height: 26,
+                  borderRadius: 6,
+                  border: selectedColor === c ? '3px solid #000' : '1px solid #999',
+                  background: c,
+                  padding: 0,
+                  cursor: 'pointer'
+                }}
+              />
+            ))}
+          </div>
+
           <div className="size-slider-container">
             <label style={{ fontSize: '14px' }}>Size: </label>
             <input 
@@ -121,14 +142,15 @@ function App() {
             />
           </div>
         </div>
-      </div>
+        </div>
 
-      <DrawingCanvas 
-        ref={canvasRef} 
-        selectedColor="black" 
-        brushSize={brushSize} 
-        isEraser={isEraser} 
-      />
+        <DrawingCanvas 
+          ref={canvasRef} 
+          selectedColor={selectedColor} 
+          brushSize={brushSize} 
+          isEraser={isEraser} 
+        />
+      </div>
 
       <footer className="footer-actions">
         <a className="footer-link" onClick={() => setView('litter')}>collection</a>
