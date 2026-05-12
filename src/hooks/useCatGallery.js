@@ -56,12 +56,19 @@ export const useCatGallery = () => {
     const result = await catService.starCat(catId);
     
     if (result.success) {
-      // Update cat in gallery
-      setGalleryCats(prev =>
-        prev.map(cat =>
-          cat.id === catId ? { ...cat, stars: result.newStarCount } : cat
-        )
-      );
+      if (typeof result.newStarCount === 'number') {
+        // Update cat in gallery
+        setGalleryCats(prev =>
+          prev.map(cat =>
+            cat.id === catId ? { ...cat, stars: result.newStarCount } : cat
+          )
+        );
+      } else {
+        // fallback: refresh single item or full gallery to sync state
+        // Here we refresh the whole gallery (cheaper to implement)
+        const refetch = await catService.getAllCats();
+        if (refetch.success) setGalleryCats(refetch.data);
+      }
       return { success: true };
     } else {
       setError(result.error);

@@ -79,27 +79,25 @@ export const starCat = async (catId) => {
   }
 
   try {
-    // First get current star count
-    const { data: catData, error: fetchError } = await supabase
-      .from('cats')
-      .select('stars')
-      .eq('id', catId)
-      .single();
+    const { data, error } = await supabase.rpc('increment_cat_stars', {
+      cat_id: catId,
+    });
 
-    if (fetchError || !catData) {
-      return { success: false, error: 'Cat not found' };
+    if (error) {
+      console.error('RPC error:', error);
+      return { success: false, error: 'Error starring cat' };
     }
 
-    const newStarCount = (catData.stars || 0) + 1;
+    // supabase.rpc returns the scalar integer as `data` (or [value] in some responses).
+    const newStarCount =
+      data && typeof data === 'number'
+        ? data
+        : Array.isArray(data) && data.length > 0
+        ? data[0]
+        : null;
 
-    const { error: updateError } = await supabase
-      .from('cats')
-      .update({ stars: newStarCount })
-      .eq('id', catId);
-
-    if (updateError) {
-      console.error('Update error:', updateError);
-      return { success: false, error: 'Error starring cat' };
+    if (newStarCount === null) {
+      return { success: false, error: 'No new star count returned' };
     }
 
     return { success: true, newStarCount, error: null };
