@@ -97,3 +97,49 @@ button {
   max-width: 300px;
   text-align: center;
 }
+
+/* Tool & Color Classes */
+
+.tool-group {
+  display: flex;
+  gap: 5px;
+}
+
+.btn-tool {
+  font-weight: normal;
+  border: 1px solid black;
+}
+
+/* This class applies when a tool is selected */
+.btn-tool.active {
+  font-weight: bold;
+  border: 2px solid black;
+}
+
+.undo-btn { margin-left: 8px; }
+.redo-btn { margin-left: 4px; }
+
+.color-palette {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.color-swatch {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  padding: 0;
+  cursor: pointer;
+  border: 1px solid #999;
+}
+
+/* This class applies when a color is picked */
+.color-swatch.selected {
+  border: 3px solid #000;
+}
+
+.size-label {
+  font-size: 14px;
+}

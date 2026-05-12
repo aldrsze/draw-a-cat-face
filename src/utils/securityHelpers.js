@@ -1,9 +1,3 @@
-/**
- * Security Helpers: Rate limiting, input validation, spam prevention
- * Prevents abuse, data breaches, and common attacks
- */
-
-// ===== 1. RATE LIMITER =====
 // Prevent rapid-fire requests from same user/session
 class RateLimiter {
   constructor(maxRequests = 10, windowMs = 60000) {
@@ -32,10 +26,6 @@ class RateLimiter {
     const record = this.requests.get(key) || { count: 0 };
     return Math.max(0, this.maxRequests - record.count);
   }
-
-  reset(key = 'default') {
-    this.requests.delete(key);
-  }
 }
 
 // Create global rate limiters for different operations
@@ -45,14 +35,12 @@ export const rateLimiters = {
   fetchCats: new RateLimiter(30, 60000), // 30 fetches per minute
 };
 
-// ===== 2. INPUT VALIDATOR =====
 // Sanitize and validate user inputs to prevent XSS, injection, and oversized payloads
 export const validateInput = {
   // Validate cat name
   catName: (name) => {
-    if (!name || typeof name !== 'string') return { valid: false, error: 'pusang nameless?' };
     if (name.trim().length === 0) return { valid: false, error: 'Name cannot be empty' };
-    if (name.length > 100) return { valid: false, error: 'Name too long (max 100 chars)' };
+    if (name.length > 50) return { valid: false, error: 'Name too long (max 50 chars)' };
     // Prevent common XSS attempts (no HTML tags, scripts, dangerous chars)
     if (/<|>|"|'|&|javascript:|onerror|onload|onclick/i.test(name)) {
       return { valid: false, error: 'Name contains invalid characters' };
@@ -91,21 +79,8 @@ export const validateInput = {
     }
     return { valid: true, value: id };
   },
-
-  // CSS color validation (prevent CSS injection via cat.color)
-  cssColor: (color) => {
-    if (!color) return { valid: true, value: '#000000' }; // default
-    // Allow hex colors only (#RGB or #RRGGBB) and basic named colors
-    const hexRegex = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
-    const namedColors = ['red', 'blue', 'green', 'black', 'white', 'gray', 'yellow', 'orange'];
-    if (hexRegex.test(color) || namedColors.includes(color.toLowerCase())) {
-      return { valid: true, value: color };
-    }
-    return { valid: false, error: 'Invalid color. Use hex (#RGB or #RRGGBB) or named colors.' };
-  },
 };
 
-// ===== 3. SPAM DETECTOR =====
 // Detect suspicious patterns: rapid submissions, repeated names, bot-like behavior
 class SpamDetector {
   constructor() {
@@ -146,7 +121,7 @@ class SpamDetector {
       return { isSpam: true, reason: 'Duplicate submission detected.' };
     }
 
-    // Flag: all names are very similar (simple heuristic)
+    // Flag: all names are very similar
     if (recentByUser.length >= 3) {
       const names = recentByUser.map((s) => s.name);
       const avgLength = names.reduce((sum, n) => sum + n.length, 0) / names.length;
@@ -158,15 +133,10 @@ class SpamDetector {
 
     return { isSpam: false };
   }
-
-  reset() {
-    this.submissions = [];
-  }
 }
 
 export const spamDetector = new SpamDetector();
 
-// ===== 4. SAFE ERROR HANDLER =====
 // Don't leak sensitive info in error messages
 export const safeErrorMessage = (error, context = 'Operation') => {
   if (!error) return `${context} failed. Please try again.`;
@@ -193,7 +163,6 @@ export const safeErrorMessage = (error, context = 'Operation') => {
   return `${context} failed. Please try again later.`;
 };
 
-// ===== 5. REQUEST THROTTLER =====
 // Ensure only one request of a type runs at a time
 class RequestThrottler {
   constructor() {
@@ -228,7 +197,6 @@ class RequestThrottler {
 
 export const requestThrottler = new RequestThrottler();
 
-// ===== 6. SECURE SESSION MANAGER =====
 // Track user session to detect suspicious behavior
 class SessionManager {
   constructor() {
@@ -264,23 +232,7 @@ class SessionManager {
 
 export const sessionManager = new SessionManager();
 
-// ===== 7. CONTENT SECURITY POLICY HELPER =====
-// Generate CSP headers (useful for server-side or meta tags)
-export const generateCSP = () => {
-  return {
-    'default-src': ["'self'"],
-    'script-src': ["'self'", "'unsafe-inline'"], // React requires unsafe-inline; consider nonce-based in production
-    'style-src': ["'self'", "'unsafe-inline'"],
-    'img-src': ["'self'", 'data:', 'https://'],
-    'font-src': ["'self'"],
-    'connect-src': ["'self'", 'https://socuwlougxeciyjgzhlc.supabase.co'], // your Supabase domain
-    'frame-ancestors': ["'none'"],
-    'base-uri': ["'self'"],
-    'form-action': ["'self'"],
-  };
-};
-
-// ===== 8. HELPER: CHECK IF DATA IS SAFE TO RENDER =====
+// check if data is safe to render
 export const isSafeToRender = (data) => {
   if (!data) return true;
   if (typeof data === 'string') {
@@ -291,17 +243,4 @@ export const isSafeToRender = (data) => {
     return isSafeToRender(data.name);
   }
   return true;
-};
-
-// ===== 9. HELPER: SANITIZE HTML (Simple XSS prevention) =====
-export const sanitizeHtml = (input) => {
-  if (typeof input !== 'string') return '';
-  const map = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#039;',
-  };
-  return input.replace(/[&<>"']/g, (m) => map[m]);
 };

@@ -67,6 +67,9 @@ export const testConnection = async () => {
 
 // Fetch all cats
 export const getAllCats = async () => {
+  const sessionErr = ensureSession();
+  if (sessionErr) return { ...sessionErr, data: [] };
+
   const sessionKey = sessionManager.sessionId;
 
   // ===== SECURITY: Rate Limiting for Fetches =====
@@ -94,6 +97,9 @@ export const getAllCats = async () => {
 
 // Save new cat
 export const saveCat = async (catName, imageDataUrl) => {
+  const sessionErr = ensureSession();
+  if (sessionErr) return sessionErr;
+
   const sessionKey = sessionManager.sessionId;
 
   // ===== SECURITY: Rate Limiting =====
@@ -187,9 +193,12 @@ export const saveCat = async (catName, imageDataUrl) => {
 
 // Star a cat
 export const starCat = async (catId) => {
+  const sessionErr = ensureSession();
+  if (sessionErr) return sessionErr;
+
   const sessionKey = sessionManager.sessionId;
 
-  // ===== SECURITY: Rate Limiting =====
+  // Star Limiting
   if (!rateLimiters.starCat.isAllowed(sessionKey)) {
     const remaining = rateLimiters.starCat.getRemainingRequests(sessionKey);
     return {
@@ -234,3 +243,19 @@ export const starCat = async (catId) => {
     return { success: false, error: safeErrorMessage(err, 'Starring') };
   }
 };
+
+const ensureSession = () => {
+  if (!sessionManager.isSessionValid(30)) {
+    return { success: false, error: 'Session expired. Please refresh and try again.' };
+  }
+  return null;
+};
+
+// In each public service function (getAllCats/saveCat/starCat):
+const sessionErr = ensureSession();
+if (sessionErr) return sessionErr;
+
+// Optional dev diagnostics:
+if (import.meta.env.DEV) {
+  console.debug('Security session stats:', sessionManager.getStats());
+}

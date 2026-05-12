@@ -1,12 +1,13 @@
 import React from 'react';
 import './CatShow.css';
+import { isSafeToRender } from '../utils/securityHelpers';
 
 const CatShow = ({ cats, onStar, onBack }) => {
 
   return (
     <div className="app-container">
       <header className="drawing-header">
-        <h1>Mga Posa</h1>
+        <h1>Show All Posa</h1>
         <button onClick={onBack} style={{ marginBottom: '10px' }}>← Back to Drawing</button>
       </header>
 
@@ -20,7 +21,9 @@ const CatShow = ({ cats, onStar, onBack }) => {
                 <div className="face-placeholder" style={{ padding: 0 }}>
                   <img src={cat.image_url || cat.image_data} alt={cat.name} style={{ width: '100%' }} />
                 </div>
-                <p className="cat-name">{cat.name}</p>
+                <p className="cat-name">
+                  {isSafeToRender(cat.name) ? cat.name : 'Unsafe name blocked'}
+                </p>
                 <div className="card-actions">
                   <button className="action-btn star-btn" onClick={() => onStar(cat.id)}>
                     ★ {cat.stars}
