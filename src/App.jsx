@@ -8,7 +8,7 @@ import './App.css';
 // main component
 function App() {
   // global state / hooks
-  const { galleryCats, dbStatus, saveCat, starCat } = useCatGallery();
+  const { galleryCats, saveCat, starCat } = useCatGallery();
 
   // UI nav
   const [view, setView] = useState('draw'); 
@@ -99,7 +99,6 @@ function App() {
       <header className="drawing-header">
         <h1>Draw a Cat Face!</h1>
         <p>(Include the balbas, please!)</p>
-        {/* <p style={{ fontSize: '12px', color: '#666' }}>{dbStatus}</p> */}
       </header>
 
       <div className="main-workspace">

@@ -33,14 +33,6 @@ const DrawingCanvas = forwardRef(({ selectedColor, brushSize, isEraser }, ref) =
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     },
-    getDrawingBlob: () => {
-      const canvas = canvasRef.current;
-      if (!canvas) return null;
-      return new Promise((resolve) => {
-        canvas.toBlob(resolve, 'image/png', 1);
-      });
-    }
-    ,
     undo: () => {
       const canvas = canvasRef.current;
       if (!canvas) return;
@@ -63,8 +55,6 @@ const DrawingCanvas = forwardRef(({ selectedColor, brushSize, isEraser }, ref) =
       undoStack.current.push(current);
       drawDataUrlToCanvas(next, ctx, canvas.width, canvas.height);
     },
-    canUndo: () => undoStack.current.length > 0,
-    canRedo: () => redoStack.current.length > 0,
   }));
 
   useEffect(() => {

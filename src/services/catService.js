@@ -9,6 +9,13 @@ import {
   sessionManager,
 } from '../utils/securityHelpers';
 
+const ensureSession = () => {
+  if (!sessionManager.isSessionValid(30)) {
+    return { success: false, error: 'Session expired. Please refresh and try again.' };
+  }
+  return null;
+};
+
 // ===== HELPER: Detect if image is mostly blank (user didn't draw) =====
 const isBlankDrawing = async (imageDataUrl) => {
   return new Promise((resolve) => {
@@ -51,7 +58,7 @@ const isBlankDrawing = async (imageDataUrl) => {
 // Test connection
 export const testConnection = async () => {
   try {
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('cats')
       .select('id')
       .limit(1);
@@ -243,19 +250,3 @@ export const starCat = async (catId) => {
     return { success: false, error: safeErrorMessage(err, 'Starring') };
   }
 };
-
-const ensureSession = () => {
-  if (!sessionManager.isSessionValid(30)) {
-    return { success: false, error: 'Session expired. Please refresh and try again.' };
-  }
-  return null;
-};
-
-// In each public service function (getAllCats/saveCat/starCat):
-const sessionErr = ensureSession();
-if (sessionErr) return sessionErr;
-
-// Optional dev diagnostics:
-if (import.meta.env.DEV) {
-  console.debug('Security session stats:', sessionManager.getStats());
-}

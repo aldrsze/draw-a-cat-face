@@ -219,15 +219,6 @@ class SessionManager {
     const ageMs = Date.now() - this.createdAt;
     return ageMs < maxAgeMins * 60000;
   }
-
-  getStats() {
-    return {
-      sessionId: this.sessionId,
-      ageMs: Date.now() - this.createdAt,
-      requestCount: this.requestCount,
-      lastActivityMs: Date.now() - this.lastActivityAt,
-    };
-  }
 }
 
 export const sessionManager = new SessionManager();

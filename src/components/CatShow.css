@@ -41,11 +41,6 @@
   margin-bottom: 10px;
 }
 
-.placeholder-text {
-  font-size: 0.8rem;
-  color: #000;
-}
-
 .cat-name {
   font-family: 'Calibri', sans-serif;
   font-size: 1rem;
@@ -77,10 +72,6 @@
 
 .star-btn {
   flex-grow: 1; 
-}
-
-.flag-btn {
-  padding: 4px 8px;
 }
 
 .gallery-container::-webkit-scrollbar {

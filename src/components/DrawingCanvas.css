@@ -7,14 +7,6 @@
   width: 100%;
 }
 
-.color-palette {
-  display: flex; 
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  gap: 15px;
-}
-
 .controls {
   display: flex;
   align-items: center;
@@ -47,19 +39,6 @@ canvas {
   height: 100%;
   display: block;
   touch-action: none;
-}
-
-.color-circle {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  border: 1px solid #000;
-  cursor: pointer;
-}
-
-.color-circle.active {
-  outline: 2px solid #000; 
-  outline-offset: 2px;
 }
 
 /* Responsive layout: side-by-side workspace on larger screens */
