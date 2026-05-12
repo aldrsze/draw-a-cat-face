@@ -2,11 +2,24 @@
 
 A fun web app where you can draw cat faces, save them to the cloud, and build your own cat gallery.
 
-## Features
+## Key Features
 
-- Draw custom cat faces with adjustable brush sizes
-- Eraser tool to refine your artwork
-- Save your cats to the cloud
-- Rate and favorite your cats
-- Browse your collection in "Bahay Pusa" (Cat House)
-- Works on mobile and tablet
+- Draw cat faces on an HTML5 canvas with adjustable brush sizes
+- Eraser tool, undo/redo, and a basic color palette
+- Responsive UI for mobile and desktop
+- Saves compressed images to Supabase Storage (not as base64 in the DB)
+- Rate-limiting and simple spam detection helpers (client-side)
+- Supabase RLS policies and DB constraints for basic validation
+
+## Contributing
+
+Feel free to open issues or PRs. If contributing, do not include any private keys in commits — use environment variables instead.
+
+## License
+
+MIT — see the project root for details.
+
+---
+aldrsze.
+
+
