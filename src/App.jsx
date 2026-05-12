@@ -70,7 +70,7 @@ function App() {
       <header className="drawing-header">
         <h1>Draw a Cat Face!</h1>
         <p>(whiskers included please)</p>
-        <p style={{ fontSize: '12px', color: '#666' }}>{dbStatus}</p>
+        {/* <p style={{ fontSize: '12px', color: '#666' }}>{dbStatus}</p> */}
       </header>
 
       <div className="toolbar">
@@ -93,6 +93,20 @@ function App() {
               onClick={() => setIsEraser(true)}
             >
               Eraser
+            </button>
+            <button
+              title="Undo"
+              onClick={() => canvasRef.current?.undo && canvasRef.current.undo()}
+              style={{ marginLeft: 8 }}
+            >
+              Undo
+            </button>
+            <button
+              title="Redo"
+              onClick={() => canvasRef.current?.redo && canvasRef.current.redo()}
+              style={{ marginLeft: 4 }}
+            >
+              Redo
             </button>
           </div>
 
