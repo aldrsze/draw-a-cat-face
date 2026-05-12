@@ -136,7 +136,7 @@ function App() {
 
             {/* Color Palette */}
             <div className="color-palette">
-              {['black','#FF5252','#FFB300','#4CAF50','#2196F3','#9C27B0'].map((c) => (
+              {['black', 'white', '#FF5252','#FFB300','#4CAF50','#2196F3','#9C27B0'].map((c) => (
                 <button
                   key={c}
                   onClick={() => { setSelectedColor(c); setIsEraser(false); }}
