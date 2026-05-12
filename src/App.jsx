@@ -190,6 +190,8 @@ function App() {
         <a className="footer-link" onClick={() => setView('show')}>Show all Cats</a>
       </footer>
 
+      <p className="dev-credit">dev: aldrsze</p>
+
       {/* Error Toast */}
       {showError && (
         <div className="error-toast">
