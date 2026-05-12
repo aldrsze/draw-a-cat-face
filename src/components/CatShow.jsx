@@ -18,7 +18,7 @@ const CatShow = ({ cats, onStar, onBack }) => {
             {cats.map((cat) => (
               <div key={cat.id} className="cat-card">
                 <div className="face-placeholder" style={{ padding: 0 }}>
-                  <img src={cat.image_data} alt={cat.name} style={{ width: '100%' }} />
+                  <img src={cat.image_url || cat.image_data} alt={cat.name} style={{ width: '100%' }} />
                 </div>
                 <p className="cat-name">{cat.name}</p>
                 <div className="card-actions">

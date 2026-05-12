@@ -70,7 +70,7 @@ function App() {
       <header className="drawing-header">
         <h1>Draw a Cat Face!</h1>
         <p>(whiskers included please)</p>
-        {/* <p style={{ fontSize: '12px', color: '#666' }}>{dbStatus}</p> */}
+        <p style={{ fontSize: '12px', color: '#666' }}>{dbStatus}</p>
       </header>
 
       <div className="toolbar">

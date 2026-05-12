@@ -21,7 +21,7 @@ const CatCollection = ({ cats, onBack }) => {
                     <div className="ear-right"></div>
                     <div className="ear-inner-left"></div>
                     <div className="ear-inner-right"></div>
-                    <img src={cat.image_data} alt={cat.name} className="cat-face-overlay" />
+                    <img src={cat.image_url || cat.image_data} alt={cat.name} className="cat-face-overlay" />
                   </div>
                   <div className="cat-body">
                     <div className="paw-left"></div>
