@@ -14,24 +14,30 @@ function App() {
   const [isSaving, setIsSaving] = useState(false);
   const canvasRef = useRef();
   const [selectedColor, setSelectedColor] = useState('black');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [showError, setShowError] = useState(false);
 
   const handleMakeItMeow = async () => {
-    if (isSaving) return; // Prevent double-submit
-    
+    if (isSaving) return;
     setIsSaving(true);
     const imageData = canvasRef.current?.getDrawingData();
+    
+    if (!imageData) {
+      showErrorToast('Failed to capture drawing. Please try again.');
+      setIsSaving(false);
+      return;
+    }
     
     const result = await saveCat(catName, imageData);
     
     if (result.success) {
       setCatName('');
-      // Clear canvas
       if (canvasRef.current?.clearCanvas) {
         canvasRef.current.clearCanvas();
       }
       setView('show');
     } else {
-      alert(result.error);
+      showErrorToast(result.error);
     }
     
     setIsSaving(false);
@@ -40,8 +46,14 @@ function App() {
   const handleStar = async (id) => {
     const result = await starCat(id);
     if (!result.success) {
-      alert(result.error);
+      showErrorToast(result.error);
     }
+  };
+
+  const showErrorToast = (msg) => {
+    setErrorMessage(msg);
+    setShowError(true);
+    setTimeout(() => setShowError(false), 3000); // Auto-dismiss
   };
 
   // View: Collection
@@ -173,6 +185,13 @@ function App() {
         </div>
         <a className="footer-link" onClick={() => setView('show')}>cat show</a>
       </footer>
+
+      {/* Error Toast */}
+      {showError && (
+        <div className="error-toast">
+          {errorMessage}
+        </div>
+      )}
     </div>
   );
 }

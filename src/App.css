@@ -83,3 +83,17 @@ button {
 .btn-main {
   font-weight: bold;
 }
+
+.error-toast {
+  position: fixed;
+  top: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ff4444;
+  color: white;
+  padding: 12px 16px;
+  border-radius: 4px;
+  z-index: 1000;
+  max-width: 300px;
+  text-align: center;
+}
