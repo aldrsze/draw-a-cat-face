@@ -1,118 +1,95 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { supabase } from './supabaseClient';
+import React, { useState, useRef } from 'react';
+import { useCatGallery } from './hooks/useCatGallery';
 import CatCollection from './components/CatCollection';
 import CatShow from './components/CatShow';
 import DrawingCanvas from './components/DrawingCanvas';
 import './App.css';
 
 function App() {
-  const [dbStatus, setDbStatus] = useState('Checking connection...');
+  const { galleryCats, dbStatus, saveCat, starCat } = useCatGallery();
   const [view, setView] = useState('draw'); 
   const [catName, setCatName] = useState('');
   const [brushSize, setBrushSize] = useState(5); 
   const [isEraser, setIsEraser] = useState(false); 
-  const canvasRef = useRef(); 
-  const [galleryCats, setGalleryCats] = useState([]);
-
-  useEffect(() => {
-    fetchCats();
-  }, []);
-
-  async function fetchCats() {
-  try {
-    const { data, error } = await supabase
-      .from('cats')
-      .select('id')
-      .limit(1);
-    
-    if (error) {
-      setDbStatus(`Connection Error: ${error.message}`);
-      console.error('Supabase error:', error);
-    } else {
-      setDbStatus('Connected to Supabase ✅');
-      
-      const { data: fullData } = await supabase
-        .from('cats')
-        .select('*')
-        .order('created_at', { ascending: false });
-      
-      if (fullData) setGalleryCats(fullData);
-    }
-  } catch (err) {
-    setDbStatus('Failed to reach database server.');
-    console.error('Network error:', err);
-  }
-}
+  const [isSaving, setIsSaving] = useState(false);
+  const canvasRef = useRef();
 
   const handleMakeItMeow = async () => {
-    if (!catName) return alert("Please name your cat!");
+    if (isSaving) return; // Prevent double-submit
     
-    const imageData = canvasRef.current.getDrawingData();
+    setIsSaving(true);
+    const imageData = canvasRef.current?.getDrawingData();
     
-    const { data, error } = await supabase
-      .from('cats')
-      .insert([{ 
-        name: catName, 
-        image_data: imageData, 
-        stars: 0 
-      }])
-      .select();
-
-    if (error) {
-      alert("Error saving your cat to the cloud!");
-      console.error(error);
-    } else {
-      setGalleryCats([data[0], ...galleryCats]);
+    const result = await saveCat(catName, imageData);
+    
+    if (result.success) {
       setCatName('');
+      // Clear canvas
+      if (canvasRef.current?.clearCanvas) {
+        canvasRef.current.clearCanvas();
+      }
       setView('show');
+    } else {
+      alert(result.error);
     }
+    
+    setIsSaving(false);
   };
 
   const handleStar = async (id) => {
-    const catToUpdate = galleryCats.find(c => c.id === id);
-    if (!catToUpdate) return;
-
-    const newStarCount = catToUpdate.stars + 1;
-
-    const { error } = await supabase
-      .from('cats')
-      .update({ stars: newStarCount })
-      .eq('id', id);
-
-    if (error) {
-      console.error('Error starring cat:', error);
-    } else {
-      setGalleryCats(galleryCats.map(cat => 
-        cat.id === id ? { ...cat, stars: newStarCount } : cat
-      ));
+    const result = await starCat(id);
+    if (!result.success) {
+      alert(result.error);
     }
   };
 
-  if (view === 'litter') return <CatCollection cats={galleryCats} onBack={() => setView('draw')} />; 
-
-  if (view === 'show') {
-    return <CatShow cats={galleryCats} onStar={handleStar} onBack={() => setView('draw')} />;
+  // View: Collection
+  if (view === 'litter') {
+    return (
+      <CatCollection 
+        cats={galleryCats} 
+        onBack={() => setView('draw')} 
+      />
+    );
   }
 
+  // View: Gallery
+  if (view === 'show') {
+    return (
+      <CatShow 
+        cats={galleryCats} 
+        onStar={handleStar} 
+        onBack={() => setView('draw')} 
+      />
+    );
+  }
+
+  // View: Drawing (Default)
   return (
     <div className="app-container">
-
       <header className="drawing-header">
         <h1>Draw a Cat Face!</h1>
         <p>(whiskers included please)</p>
+        {/* <p style={{ fontSize: '12px', color: '#666' }}>{dbStatus}</p> */}
       </header>
 
       <div className="toolbar">
         <div className="controls">
           <div style={{ display: 'flex', gap: '5px' }}>
             <button 
-              style={{ fontWeight: !isEraser ? 'bold' : 'normal', border: !isEraser ? '2px solid black' : '1px solid black' }}
+              style={{ 
+                fontWeight: !isEraser ? 'bold' : 'normal', 
+                border: !isEraser ? '2px solid black' : '1px solid black' 
+              }}
               onClick={() => setIsEraser(false)}
             >
               Pen
             </button>
             <button 
-              style={{ fontWeight: isEraser ? 'bold' : 'normal', border: isEraser ? '2px solid black' : '1px solid black' }}
+              style={{ 
+                fontWeight: isEraser ? 'bold' : 'normal', 
+                border: isEraser ? '2px solid black' : '1px solid black' 
+              }}
               onClick={() => setIsEraser(true)}
             >
               Eraser
@@ -148,8 +125,15 @@ function App() {
             className="cat-name-input"
             value={catName}
             onChange={(e) => setCatName(e.target.value)}
+            disabled={isSaving}
           />
-          <button className="btn-main" onClick={handleMakeItMeow}>make it meow!</button>
+          <button 
+            className="btn-main" 
+            onClick={handleMakeItMeow}
+            disabled={isSaving}
+          >
+            {isSaving ? 'Saving...' : 'make it meow!'}
+          </button>
         </div>
         <a className="footer-link" onClick={() => setView('show')}>cat show</a>
       </footer>

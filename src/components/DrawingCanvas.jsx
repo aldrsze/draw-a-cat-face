@@ -7,19 +7,30 @@ const DrawingCanvas = forwardRef(({ selectedColor, brushSize, isEraser }, ref) =
 
   useImperativeHandle(ref, () => ({
     getDrawingData: () => {
+      const canvas = canvasRef.current;
+      if (!canvas) return null;
+      
       const tempCanvas = document.createElement('canvas');
-      tempCanvas.width = canvasRef.current.width;
-      tempCanvas.height = canvasRef.current.height;
+      tempCanvas.width = canvas.width;
+      tempCanvas.height = canvas.height;
       const tCtx = tempCanvas.getContext('2d');
       tCtx.fillStyle = '#ffffff';
       tCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
-      tCtx.drawImage(canvasRef.current, 0, 0);
+      tCtx.drawImage(canvas, 0, 0);
       return tempCanvas.toDataURL('image/png');
+    },
+    clearCanvas: () => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
   }));
 
   useEffect(() => {
     const canvas = canvasRef.current;
+    if (!canvas) return;
+    
     const ctx = canvas.getContext('2d');
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
@@ -29,6 +40,8 @@ const DrawingCanvas = forwardRef(({ selectedColor, brushSize, isEraser }, ref) =
 
   const getCoordinates = (e) => {
     const canvas = canvasRef.current;
+    if (!canvas) return { x: 0, y: 0 };
+    
     const rect = canvas.getBoundingClientRect();
     const scaleX = canvas.width / rect.width;
     const scaleY = canvas.height / rect.height;
@@ -44,7 +57,9 @@ const DrawingCanvas = forwardRef(({ selectedColor, brushSize, isEraser }, ref) =
 
   const startDrawing = (e) => {
     const { x, y } = getCoordinates(e);
-    const ctx = canvasRef.current.getContext('2d');
+    const ctx = canvasRef.current?.getContext('2d');
+    if (!ctx) return;
+    
     ctx.beginPath();
     ctx.moveTo(x, y);
     isDrawing.current = true;
@@ -53,7 +68,9 @@ const DrawingCanvas = forwardRef(({ selectedColor, brushSize, isEraser }, ref) =
   const draw = (e) => {
     if (!isDrawing.current) return;
     const { x, y } = getCoordinates(e);
-    const ctx = canvasRef.current.getContext('2d');
+    const ctx = canvasRef.current?.getContext('2d');
+    if (!ctx) return;
+    
     ctx.lineTo(x, y);
     ctx.stroke();
   };
@@ -72,13 +89,15 @@ const DrawingCanvas = forwardRef(({ selectedColor, brushSize, isEraser }, ref) =
         onMouseMove={draw}
         onMouseUp={stopDrawing}
         onMouseOut={stopDrawing}
-        /* Mobile Touch Events */
         onTouchStart={startDrawing}
         onTouchMove={draw}
         onTouchEnd={stopDrawing}
+        style={{ cursor: 'crosshair', touchAction: 'none' }}
       />
     </div>
   );
 });
+
+DrawingCanvas.displayName = 'DrawingCanvas';
 
 export default DrawingCanvas;

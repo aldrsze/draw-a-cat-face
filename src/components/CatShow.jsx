@@ -6,7 +6,7 @@ const CatShow = ({ cats, onStar, onBack }) => {
   return (
     <div className="app-container">
       <header className="drawing-header">
-        <h1>Cat Show Gallery</h1>
+        <h1>Mga Posa</h1>
         <button onClick={onBack} style={{ marginBottom: '10px' }}>← Back to Drawing</button>
       </header>
 
