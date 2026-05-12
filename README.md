@@ -17,9 +17,10 @@ Feel free to open issues or PRs. If contributing, do not include any private key
 
 ## License
 
-MIT — see the project root for details.
+This project is licensed under the MIT License. See [LICENSE](LICENSE).
 
 ---
+
 aldrsze.
 
 
