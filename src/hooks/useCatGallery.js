@@ -4,17 +4,17 @@ import * as catService from '../services/catService';
 export const useCatGallery = () => {
   const [galleryCats, setGalleryCats] = useState([]);
 
-  // Initialize: test connection and fetch cats
+  // Load gallery data on first render.
   useEffect(() => {
     initializeGallery();
   }, []);
 
   const initializeGallery = async () => {
-    // Test connection first
+    // Skip gallery loading if Supabase is unavailable.
     const connResult = await catService.testConnection();
 
     if (connResult.success) {
-      // Fetch cats
+      // Fetch the most recent cat list.
       const catsResult = await catService.getAllCats();
       if (catsResult.success) {
         setGalleryCats(catsResult.data);
@@ -26,7 +26,7 @@ export const useCatGallery = () => {
     const result = await catService.saveCat(catName, imageData);
     
     if (result.success) {
-      // Add new cat to beginning of gallery
+      // Prepend the newly saved cat for immediate feedback.
       setGalleryCats(prev => [result.data, ...prev]);
       return { success: true, data: result.data };
     } else {
@@ -39,15 +39,14 @@ export const useCatGallery = () => {
     
     if (result.success) {
       if (typeof result.newStarCount === 'number') {
-        // Update cat in gallery
+        // Update the cached star count in place.
         setGalleryCats(prev =>
           prev.map(cat =>
             cat.id === catId ? { ...cat, stars: result.newStarCount } : cat
           )
         );
       } else {
-        // fallback: refresh single item or full gallery to sync state
-        // Here we refresh the whole gallery (cheaper to implement)
+        // Refresh the gallery if the RPC response is incomplete.
         const refetch = await catService.getAllCats();
         if (refetch.success) setGalleryCats(refetch.data);
       }

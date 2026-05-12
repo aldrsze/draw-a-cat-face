@@ -10,13 +10,14 @@ import {
 } from '../utils/securityHelpers';
 
 const ensureSession = () => {
+  // Block requests from stale client sessions.
   if (!sessionManager.isSessionValid(30)) {
     return { success: false, error: 'Session expired. Please refresh and try again.' };
   }
   return null;
 };
 
-// ===== HELPER: Detect if image is mostly blank (user didn't draw) =====
+// Reject near-empty drawings before upload.
 const isBlankDrawing = async (imageDataUrl) => {
   return new Promise((resolve) => {
     const img = new Image();
@@ -55,7 +56,7 @@ const isBlankDrawing = async (imageDataUrl) => {
   });
 };
 
-// Test connection
+// Verify the database is reachable before loading the gallery.
 export const testConnection = async () => {
   try {
     const { error } = await supabase
@@ -72,14 +73,14 @@ export const testConnection = async () => {
   }
 };
 
-// Fetch all cats
+// Load all cats for the gallery view.
 export const getAllCats = async () => {
   const sessionErr = ensureSession();
   if (sessionErr) return { ...sessionErr, data: [] };
 
   const sessionKey = sessionManager.sessionId;
 
-  // ===== SECURITY: Rate Limiting for Fetches =====
+  // Rate Limiting for Fetches
   if (!rateLimiters.fetchCats.isAllowed(sessionKey)) {
     return { success: false, data: [], error: 'Too many requests. Please wait.' };
   }
@@ -102,14 +103,14 @@ export const getAllCats = async () => {
   }
 };
 
-// Save new cat
+// Validate, compress, and save a new cat drawing.
 export const saveCat = async (catName, imageDataUrl) => {
   const sessionErr = ensureSession();
   if (sessionErr) return sessionErr;
 
   const sessionKey = sessionManager.sessionId;
 
-  // ===== SECURITY: Rate Limiting =====
+  // SECURITY: Rate Limiting
   if (!rateLimiters.saveCat.isAllowed(sessionKey)) {
     const remaining = rateLimiters.saveCat.getRemainingRequests(sessionKey);
     return {
@@ -118,7 +119,7 @@ export const saveCat = async (catName, imageDataUrl) => {
     };
   }
 
-  // ===== SECURITY: Input Validation =====
+  // Input Validation
   const nameValidation = validateInput.catName(catName);
   if (!nameValidation.valid) {
     return { success: false, error: nameValidation.error };
@@ -134,19 +135,19 @@ export const saveCat = async (catName, imageDataUrl) => {
     return { success: false, error: imageFormatValidation.error };
   }
 
-  // ===== SECURITY: Check if drawing is blank (user didn't actually draw) =====
+  // Check if drawing is blank (user didn't actually draw)
   const isBlank = await isBlankDrawing(imageDataUrl);
   if (isBlank) {
     return { success: false, error: 'Posang walang mukha?' };
   }
 
-  // ===== SECURITY: Spam Detection =====
+  // Spam Detection
   const spamCheck = spamDetector.isSpam(catName, sessionKey);
   if (spamCheck.isSpam) {
     return { success: false, error: spamCheck.reason };
   }
 
-  // ===== SECURITY: Prevent Concurrent Uploads =====
+  // Prevent Concurrent Uploads
   if (requestThrottler.isActive(`saveCat_${sessionKey}`)) {
     return { success: false, error: 'Upload already in progress. Please wait.' };
   }
@@ -205,7 +206,7 @@ export const starCat = async (catId) => {
 
   const sessionKey = sessionManager.sessionId;
 
-  // Star Limiting
+  // Limit repeated star requests from the same session.
   if (!rateLimiters.starCat.isAllowed(sessionKey)) {
     const remaining = rateLimiters.starCat.getRemainingRequests(sessionKey);
     return {
@@ -214,7 +215,7 @@ export const starCat = async (catId) => {
     };
   }
 
-  // ===== SECURITY: Validate Cat ID =====
+  // Ensure the target record ID is valid before updating.
   const idValidation = validateInput.catId(catId);
   if (!idValidation.valid) {
     return { success: false, error: idValidation.error };
@@ -232,7 +233,7 @@ export const starCat = async (catId) => {
       return { success: false, error: safeErrorMessage(error, 'Starring cat') };
     }
 
-    // supabase.rpc returns the scalar integer as `data` (or [value] in some responses).
+    // Normalize the RPC response into a numeric star count.
     const newStarCount =
       data && typeof data === 'number'
         ? data

@@ -1,15 +1,10 @@
 import { supabase } from '../supabaseClient';
 
 /**
- * Resize & compress a dataURL/image to a Blob (JPEG).
- * @param {HTMLImageElement|HTMLCanvasElement|string} source - dataURL string or Image/Canvas
- * @param {number} maxWidth
- * @param {number} maxHeight
- * @param {number} quality - 0..1 for JPEG quality
- * @returns {Promise<Blob>}
+ * Resize and compress an image source into a JPEG blob.
  */
 export async function compressToBlob(source, maxWidth = 800, maxHeight = 800, quality = 0.8) {
-  // create image element if source is dataURL
+  // Convert string input into a loadable image element.
   let img;
   if (typeof source === 'string') {
     img = new Image();
@@ -28,7 +23,7 @@ export async function compressToBlob(source, maxWidth = 800, maxHeight = 800, qu
   const [origW, origH] = [img ? img.width : source.width, img ? img.height : source.height];
   let [width, height] = [origW, origH];
 
-  // scale to fit max dimensions
+  // Preserve aspect ratio while fitting the target bounds.
   const ratio = Math.min(maxWidth / width, maxHeight / height, 1);
   width = Math.round(width * ratio);
   height = Math.round(height * ratio);
@@ -43,11 +38,7 @@ export async function compressToBlob(source, maxWidth = 800, maxHeight = 800, qu
 }
 
 /**
- * Upload a Blob to Supabase Storage under a deterministic path and return public URL.
- * @param {Blob} blob
- * @param {string} bucket - storage bucket name (create in Supabase -> Storage)
- * @param {string} folder - optional folder prefix, e.g., 'cats'
- * @param {string} filename - optional filename; if omitted we generate a uuid + .jpg
+ * Upload a blob to Supabase Storage and return its public URL.
  */
 export async function uploadBlobToStorage(blob, bucket = 'drawings', folder = 'cats', filename) {
   if (!blob) throw new Error('No blob provided');
@@ -58,14 +49,14 @@ export async function uploadBlobToStorage(blob, bucket = 'drawings', folder = 'c
   }
   const path = `${folder}/${filename}`;
 
-  // ensure bucket exists and is configured (public/read policies)
+  // Upload to the configured public bucket.
   const { data, error: uploadError } = await supabase.storage
     .from(bucket)
     .upload(path, blob, { contentType: blob.type, upsert: false });
 
   if (uploadError) throw uploadError;
 
-  // Get public URL (for a public bucket)
+  // Resolve the public URL for the uploaded asset.
   const { data: publicUrlData } = supabase.storage.from(bucket).getPublicUrl(path);
   return { path, publicUrl: publicUrlData.publicUrl };
 }
