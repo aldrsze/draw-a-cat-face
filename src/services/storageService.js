@@ -50,7 +50,7 @@ export async function uploadBlobToStorage(blob, bucket = 'drawings', folder = 'c
   const path = `${folder}/${filename}`;
 
   // Upload to the configured public bucket.
-  const { data, error: uploadError } = await supabase.storage
+  const { error: uploadError } = await supabase.storage
     .from(bucket)
     .upload(path, blob, { contentType: blob.type, upsert: false });
 

@@ -68,7 +68,7 @@ export const testConnection = async () => {
       return { success: false, message: `Connection Error: ${error.message}` };
     }
     return { success: true, message: 'Connected to Supabase' };
-  } catch (err) {
+  } catch {
     return { success: false, message: 'Failed to reach database server.' };
   }
 };
@@ -97,9 +97,9 @@ export const getAllCats = async () => {
       return { success: false, data: [], error: safeErrorMessage(error, 'Fetching') };
     }
     return { success: true, data: data || [], error: null };
-  } catch (err) {
-    console.error('Network error:', err);
-    return { success: false, data: [], error: safeErrorMessage(err, 'Network') };
+  } catch {
+    console.error('Network error:');
+    return { success: false, data: [], error: safeErrorMessage(null, 'Network') };
   }
 };
 
@@ -193,9 +193,9 @@ export const saveCat = async (catName, imageDataUrl) => {
 
       return { success: true, data: data[0], error: null };
     });
-  } catch (err) {
-    console.error('Upload error:', err);
-    return { success: false, error: safeErrorMessage(err, 'Upload') };
+  } catch {
+    console.error('Upload/Starring error');
+    return { success: false, error: safeErrorMessage(null, 'Action') };
   }
 };
 
@@ -246,8 +246,8 @@ export const starCat = async (catId) => {
     }
 
     return { success: true, newStarCount, error: null };
-  } catch (err) {
-    console.error('Network error:', err);
-    return { success: false, error: safeErrorMessage(err, 'Starring') };
+  } catch {
+    console.error('Network error:');
+    return { success: false, error: safeErrorMessage(null, 'Starring') };
   }
 };

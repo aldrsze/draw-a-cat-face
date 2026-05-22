@@ -6,21 +6,22 @@ export const useCatGallery = () => {
 
   // Load gallery data on first render.
   useEffect(() => {
-    initializeGallery();
-  }, []);
+    let isMounted = true;
+    const load = async () => {
+      // Skip gallery loading if Supabase is unavailable.
+      const connResult = await catService.testConnection();
 
-  const initializeGallery = async () => {
-    // Skip gallery loading if Supabase is unavailable.
-    const connResult = await catService.testConnection();
-
-    if (connResult.success) {
-      // Fetch the most recent cat list.
-      const catsResult = await catService.getAllCats();
-      if (catsResult.success) {
-        setGalleryCats(catsResult.data);
+      if (connResult.success && isMounted) {
+        // Fetch the most recent cat list.
+        const catsResult = await catService.getAllCats();
+        if (catsResult.success && isMounted) {
+          setGalleryCats(catsResult.data);
+        }
       }
-    }
-  };
+    };
+    load();
+    return () => { isMounted = false; };
+  }, []);
 
   const saveCat = useCallback(async (catName, imageData) => {
     const result = await catService.saveCat(catName, imageData);

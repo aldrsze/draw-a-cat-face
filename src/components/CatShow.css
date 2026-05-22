@@ -1,83 +1,138 @@
+/* --- Shared / Default Base Styles --- */
 .gallery-container {
-  width: 95vw;
-  max-width: 1200px;
-  flex-grow: 1;
-  max-height: 80vh; 
-  overflow-y: auto;
-  padding: 15px;
-  margin-top: 10px;
-  border: 1px solid #000;
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
 }
 
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); 
-  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 24px;
   width: 100%;
 }
 
-@media (max-width: 400px) {
-  .gallery-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
 .cat-card {
-  border: 1px solid #000;
-  background: #fff;
+  background-color: white;
+  border: 1px solid rgba(0,0,0,0.05);
+  border-radius: 22px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 10px;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+}
+
+.cat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
 }
 
 .face-placeholder {
   width: 100%;
   aspect-ratio: 1 / 1;
-  border: 1px solid #000;
+  background-color: #f2f2f7;
+  border-radius: 16px;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+.cat-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .cat-name {
-  font-family: 'Calibri', sans-serif;
-  font-size: 1rem;
-  margin-bottom: 10px;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 12px;
   text-align: center;
   width: 100%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  letter-spacing: -0.01em;
 }
 
 .card-actions {
   display: flex;
-  gap: 5px;
+  gap: 8px;
   width: 100%;
 }
 
-.action-btn {
+.star-btn {
+  flex: 1;
+  background-color: #f2f2f7;
+  color: var(--color-accent);
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 4px;
-  background: #fff;
-  border: 1px solid #000;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: 0.9rem;
+  gap: 4px;
 }
 
-.star-btn {
-  flex-grow: 1; 
+/* --- Desktop Extreme Density Mode (OVERRIDE) --- */
+@media (min-width: 1024px) {
+  .gallery-container {
+    width: 100vw !important;
+    max-width: none !important;
+    flex: 1;
+    overflow-y: auto !important;
+    height: calc(100vh - 120px) !important;
+    padding: 20px 60px;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(10px);
+    border-radius: 40px 40px 0 0;
+    margin-top: 10px;
+    border: 1px solid rgba(0,0,0,0.05);
+  }
+
+  .gallery-grid {
+    /* Guaranteed 8-10 cards per row */
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)) !important;
+    gap: 16px !important;
+    width: 100% !important;
+  }
+
+  .cat-card {
+    padding: 10px !important;
+    border-radius: 14px !important;
+  }
+
+  .face-placeholder {
+    margin-bottom: 8px !important;
+    border-radius: 10px !important;
+  }
+
+  .cat-name {
+    font-size: 12px !important;
+    margin-bottom: 8px !important;
+    width: 100% !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .star-btn {
+    padding: 4px 8px !important;
+    font-size: 10px !important;
+    border-radius: 8px !important;
+  }
+
+  .gallery-container::-webkit-scrollbar { width: 6px; }
+  .gallery-container::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
 }
 
-.gallery-container::-webkit-scrollbar {
-  width: 12px;
-}
-.gallery-container::-webkit-scrollbar-thumb {
-  background: #000;
-  border-left: 2px solid white;
+/* --- Mobile Specific Mode --- */
+@media (max-width: 640px) {
+  .gallery-container { padding: 12px; }
+  .gallery-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+  .cat-card { padding: 10px; border-radius: 16px; }
+  .cat-name { font-size: 14px; margin-bottom: 8px; }
+  .star-btn { padding: 6px 10px; font-size: 12px; }
 }

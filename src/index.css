@@ -1,3 +1,24 @@
+:root {
+  /* Modern App Palette */
+  --color-bg: #ffffff;
+  --color-bg-alt: #f2f2f7;
+  --color-text: #000000;
+  --color-text-secondary: #6e6e73;
+  --color-accent: #007aff;
+  --color-accent-hover: #0056b3;
+  --color-separator: rgba(0, 0, 0, 0.08);
+  
+  /* Modern Shadows */
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.06);
+  --shadow-floating: 0 10px 30px rgba(0, 0, 0, 0.12);
+  --shadow-canvas: 0 20px 60px rgba(0, 0, 0, 0.15);
+  
+  /* Borders */
+  --radius-pill: 100px;
+  --radius-ios: 12px;
+  --radius-canvas: 50%;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -6,13 +27,52 @@
 
 html, body, #root {
   width: 100%;
-  height: 100%;
-  overflow: hidden;
+  min-height: 100%;
+  background-color: var(--color-bg);
 }
 
 body {
-  background-color: #ffffff;
-  color: #333;
-  font-family: 'Calibri', sans-serif;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+@media (min-width: 1069px) {
+  html, body, #root {
+    height: 100vh;
+    overflow: hidden;
+  }
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+  color: var(--color-text);
+  line-height: 1.47;
   -webkit-font-smoothing: antialiased;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+button:active {
+  transform: scale(0.94);
+}
+
+input[type="text"] {
+  font-family: inherit;
+  outline: none;
+}
+
+a {
+  cursor: pointer;
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
 }

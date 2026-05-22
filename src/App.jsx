@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useCatGallery } from './hooks/useCatGallery';
 import CatCollection from './components/CatCollection';
 import CatShow from './components/CatShow';
@@ -96,101 +96,118 @@ function App() {
   // View: Drawing (Default)
   return (
     <div className="app-container">
-      <header className="drawing-header">
-        <h1>Draw a Cat Face!</h1>
-        <p>(Include the balbas, please!)</p>
-      </header>
+      <section className="product-tile product-tile-light">
+        <header className="drawing-header">
+          <h1 className="hero-title">Draw a Cat Face!</h1>
+          <p className="hero-tagline">Include the balbas, please.</p>
+        </header>
 
-      <div className="main-workspace">
-        <div className="toolbar">
-          <div className="controls">
-            {/* Tool Selection */}
-            <div className="tool-group">
-              <button 
-                className={`btn-tool ${!isEraser ? 'active' : ''}`}
-                onClick={() => setIsEraser(false)}
-              >
-                Pen
-              </button>
-              <button 
-                className={`btn-tool ${isEraser ? 'active' : ''}`}
-                onClick={() => setIsEraser(true)}
-              >
-                Eraser
-              </button>
-              <button
-                className="undo-btn"
-                title="Undo"
-                onClick={() => canvasRef.current?.undo?.()}
-              >
-                Undo
-              </button>
-              <button
-                className="redo-btn"
-                title="Redo"
-                onClick={() => canvasRef.current?.redo?.()}
-              >
-                Redo
-              </button>
-            </div>
+        <div className="main-workspace">
+          <div className="toolbar">
+            <div className="controls">
+              {/* Tool Selection */}
+              <div className="tool-group">
+                <button 
+                  className={`btn-tool ${!isEraser ? 'active' : ''}`}
+                  onClick={() => setIsEraser(false)}
+                >
+                  Pen
+                </button>
+                <button 
+                  className={`btn-tool ${isEraser ? 'active' : ''}`}
+                  onClick={() => setIsEraser(true)}
+                >
+                  Eraser
+                </button>
+              </div>
 
-            {/* Color Palette */}
-            <div className="color-palette">
-              {['black', 'white', '#FF5252','#FFB300','#4CAF50','#2196F3','#9C27B0'].map((c) => (
+              <div className="history-controls">
                 <button
-                  key={c}
-                  onClick={() => { setSelectedColor(c); setIsEraser(false); }}
-                  title={`Color ${c}`}
-                  className={`color-swatch ${selectedColor === c ? 'selected' : ''}`}
-                  style={{ background: c }}
-                />
-              ))}
-            </div>
+                  className="btn-utility"
+                  title="Undo"
+                  onClick={() => canvasRef.current?.undo?.()}
+                >
+                  Undo
+                </button>
+                <button
+                  className="btn-utility"
+                  title="Redo"
+                  onClick={() => canvasRef.current?.redo?.()}
+                >
+                  Redo
+                </button>
+              </div>
 
-            <div className="size-slider-container">
-              <label className="size-label">Size: </label>
-              <input 
-                type="range" 
-                min="1" 
-                max="40" 
-                value={brushSize} 
-                onChange={(e) => setBrushSize(Number(e.target.value))}
-              />
+              {/* Color Palette */}
+              <div className="color-palette">
+                {[
+                  '#1d1d1f', // Space Gray
+                  '#f5f5f7', // Silver
+                  '#ff3b30', // Apple Red
+                  '#ff9500', // Apple Orange
+                  '#34c759', // Apple Green
+                  '#007aff', // Apple Blue
+                  '#af52de', // Apple Purple
+                  '#5856d6', // Apple Indigo
+                ].map((c) => (
+                  <button
+                    key={c}
+                    onClick={() => { setSelectedColor(c); setIsEraser(false); }}
+                    title={`Color ${c}`}
+                    className={`color-swatch ${selectedColor === c ? 'selected' : ''}`}
+                    style={{ background: c }}
+                  />
+                ))}
+              </div>
+
+              <div className="size-slider-container">
+                <label className="size-label">Size</label>
+                <input 
+                  type="range" 
+                  min="1" 
+                  max="40" 
+                  value={brushSize} 
+                  onChange={(e) => setBrushSize(Number(e.target.value))}
+                />
+              </div>
             </div>
           </div>
-        </div>
 
-        <DrawingCanvas 
-          ref={canvasRef} 
-          selectedColor={selectedColor} 
-          brushSize={brushSize} 
-          isEraser={isEraser} 
-        />
-      </div>
-
-      <footer className="footer-actions">
-        <a className="footer-link" onClick={() => setView('collection')}>Collection</a>
-        <div className="action-stack">
-          <input 
-            type="text" 
-            placeholder="Cat name..." 
-            className="cat-name-input"
-            value={catName}
-            onChange={(e) => setCatName(e.target.value)}
-            disabled={isSaving}
+          <DrawingCanvas 
+            ref={canvasRef} 
+            selectedColor={selectedColor} 
+            brushSize={brushSize} 
+            isEraser={isEraser} 
           />
-          <button 
-            className="btn-main" 
-            onClick={handleMakeItMeow}
-            disabled={isSaving}
-          >
-            {isSaving ? 'Saving...' : 'make it meow!'}
-          </button>
         </div>
-        <a className="footer-link" onClick={() => setView('show')}>Show all Cats</a>
-      </footer>
 
-      <p className="dev-credit">dev: aldrsze</p>
+        <footer className="footer-actions">
+          <div className="action-stack">
+            <input 
+              type="text" 
+              placeholder="Cat name..." 
+              className="cat-name-input"
+              value={catName}
+              onChange={(e) => setCatName(e.target.value)}
+              disabled={isSaving}
+            />
+            <button 
+              className="btn-main" 
+              onClick={handleMakeItMeow}
+              disabled={isSaving}
+            >
+              {isSaving ? 'Saving...' : 'Make it meow!'}
+            </button>
+          </div>
+          
+          <nav className="navigation-links">
+            <a className="footer-link" onClick={() => setView('collection')}>Collection</a>
+            <a className="footer-link" onClick={() => setView('show')}>Show all Cats</a>
+          </nav>
+        </footer>
+
+        <p className="dev-credit">dev: aldrsze</p>
+      </section>
 
       {/* Error Toast */}
       {showError && (

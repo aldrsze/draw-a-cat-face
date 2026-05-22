@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useImperativeHandle, forwardRef } from 'react';
+import { useRef, useEffect, useImperativeHandle, forwardRef } from 'react';
 import './DrawingCanvas.css';
 
 const DrawingCanvas = forwardRef(({ selectedColor, brushSize, isEraser }, ref) => {
@@ -79,7 +79,7 @@ const DrawingCanvas = forwardRef(({ selectedColor, brushSize, isEraser }, ref) =
       if (undoStack.current.length > maxHistory) undoStack.current.shift();
       // clear redo when new action occurs
       redoStack.current = [];
-    } catch (e) {
+    } catch {
       // ignore
     }
   };

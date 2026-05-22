@@ -1,37 +1,18 @@
-.toolbar {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 15px;
-  width: 100%;
-}
-
-.controls {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-}
-
-.size-slider-container {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  min-width: 180px;
-  justify-content: center;
-}
-
 .canvas-container {
-  border: 2px solid #000; 
   background: white;
-  width: min(80vw, 360px);
-  height: min(80vw, 360px);
+  width: min(70vw, 480px);
+  height: min(70vw, 480px);
   border-radius: 50%;
-  overflow: hidden; 
+  overflow: hidden;
   display: flex;
   touch-action: none;
-  margin: 10px auto; 
+  box-shadow: var(--shadow-canvas);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid var(--color-separator);
+}
+
+.canvas-container:hover {
+  transform: scale(1.02);
 }
 
 canvas {
@@ -41,35 +22,16 @@ canvas {
   touch-action: none;
 }
 
-/* Responsive layout: side-by-side workspace on larger screens */
-@media (min-width: 900px) {
-  .toolbar {
-    width: 320px;
-  }
-  .main-workspace {
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: center;
-    gap: 24px;
-  }
+@media (min-width: 1069px) {
   .canvas-container {
-    width: 360px;
-    height: 360px;
-    margin: 0;
+    width: min(60vh, 520px);
+    height: min(60vh, 520px);
   }
 }
 
-/* Small screen tweaks */
-@media (max-width: 480px) {
-  .controls {
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-  .size-slider-container {
-    min-width: 120px;
-  }
+@media (max-width: 768px) {
   .canvas-container {
-    width: min(72vw, 280px);
-    height: min(72vw, 280px);
+    width: min(85vw, 320px);
+    height: min(85vw, 320px);
   }
 }
