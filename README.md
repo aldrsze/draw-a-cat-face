@@ -4,8 +4,7 @@ A fun web app where you can draw cat faces, save them to the cloud, and build yo
 
 ## Video or Image Presentation
 
-![App Demo](./public/icon.ico)
-*(Replace this with a link to your demo video or a screenshot)*
+![App Demo](./DrawACatFace.gif)
 
 ## Technologies
 
@@ -28,7 +27,12 @@ The project is built as a modern React 19 application using Vite for a fast deve
 
 ## What I learned
 
-*(Fill in your personal learnings here, e.g., challenges with Canvas API, working with Supabase RLS, or designing the minimal UI.)*
+During the development of DrawACatFace, I focused on bridging the gap between creative tools and cloud integration. Here are some key takeaways:
+
+- **Canvas API & State Management:** I learned how to manage complex canvas states, including implementing a robust undo/redo system and handling high-DPI displays for crisp drawing results across different devices.
+- **Efficient Cloud Storage Patterns:** Instead of storing heavy base64 strings in a database, I implemented a workflow to compress images on the client side before uploading them to Supabase Storage. This significantly improved app performance and reduced storage costs.
+- **The "Less is More" Design Philosophy:** Adhering to Apple-inspired UI principles taught me the importance of typography (`SF Pro`) and purposeful color usage. Focusing on a single "Action Blue" helps keep the interface intuitive and clutter-free.
+- **Serverless Security:** I gained experience in securing a public-facing application using Supabase Row Level Security (RLS) policies and client-side rate-limiting to prevent spam while maintaining an open, "low-friction" user experience.
 
 ## Future Enhancements
 
