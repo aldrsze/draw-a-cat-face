@@ -2,7 +2,7 @@
 
 A fun web app where you can draw cat faces, save them to the cloud, and build your own cat gallery.
 
-## Video or Image Presentation
+## Presentation
 
 ![App Demo](./DrawACatFace.gif)
 
